@@ -78,6 +78,7 @@ const Outing = () => {
             const { data, error } = await supabase
                 .from('stay_requests')
                 .select('*')
+                .neq('status', 'returned') // Filter out returned items
                 .order('created_at', { ascending: false });
 
             if (error) {
