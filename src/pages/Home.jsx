@@ -22,7 +22,7 @@ const Home = () => {
     return (
         <div className="space-y-6">
             {/* Banner Area */}
-            <div className="bg-nh-yellow/10 border border-nh-yellow/20 p-6 rounded-lg text-center">
+            <div className="text-center py-4">
                 <div className="space-y-2">
                     <p className="text-xl font-bold text-nh-blue">구례교육원에 스며듦</p>
                     <p className="text-xs text-gray-600 leading-relaxed">
