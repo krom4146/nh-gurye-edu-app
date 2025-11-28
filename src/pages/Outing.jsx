@@ -203,6 +203,26 @@ const Outing = () => {
     const isReturned = currentRequestData?.status === 'returned';
     const showForm = !currentRequestId || isReturned;
 
+    // Check if Supabase is initialized
+    if (!supabase) {
+        return (
+            <div className="p-6 text-center space-y-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-2">
+                    <span className="text-3xl">⚠️</span>
+                </div>
+                <h2 className="text-xl font-bold text-gray-800">서비스 연결 오류</h2>
+                <p className="text-gray-600">
+                    데이터베이스 연결 설정이 되어있지 않습니다.<br />
+                    관리자에게 문의해주세요.
+                </p>
+                <p className="text-xs text-gray-400 bg-gray-100 p-2 rounded">
+                    Error: Supabase client not initialized.<br />
+                    Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY.
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
