@@ -37,7 +37,7 @@ const LifeGuide = () => {
             {/* Rules Grid */}
             <section>
                 <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <UserCheck className="text-nh-blue" /> 생활 수칙
+                    <UserCheck className="text-nh-blue" /> 생활 가이드
                 </h2>
                 <div className="grid grid-cols-2 gap-3">
                     {rules.map((rule, index) => (
