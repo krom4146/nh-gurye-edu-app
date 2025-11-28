@@ -150,6 +150,32 @@ const Outing = () => {
         }
     };
 
+    // Student Return Handler
+    const handleReturn = async () => {
+        if (!window.confirm('복귀하시겠습니까?')) return;
+
+        try {
+            if (!supabase) throw new Error("Supabase client not initialized");
+
+            const { error } = await supabase
+                .from('stay_requests')
+                .update({
+                    status: 'returned',
+                    returned_at: new Date().toISOString()
+                })
+                .eq('id', currentRequestId);
+
+            if (error) throw error;
+
+            // Update local state
+            setCurrentRequestData(prev => ({ ...prev, status: 'returned', returned_at: new Date().toISOString() }));
+            alert('복귀 처리가 완료되었습니다.');
+        } catch (error) {
+            console.error("Error updating document: ", error);
+            alert(`오류가 발생했습니다: ${error.message}`);
+        }
+    };
+
     // Admin Return Handler
     const handleAdminReturn = async (id) => {
         try {
