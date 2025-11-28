@@ -146,7 +146,7 @@ const Outing = () => {
             alert('신청이 완료되었습니다.');
         } catch (error) {
             console.error("Error adding document: ", error);
-            alert('오류가 발생했습니다. 다시 시도해주세요.');
+            alert(`오류가 발생했습니다: ${error.message || JSON.stringify(error)}`);
         }
     };
 
