@@ -1,0 +1,27 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import Outing from './pages/Outing';
+import Facility from './pages/Facility';
+import LifeGuide from './pages/LifeGuide';
+import Rules from './pages/Rules';
+import Bedding from './pages/Bedding';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="outing" element={<Outing />} />
+          <Route path="facility" element={<Facility />} />
+          <Route path="life" element={<LifeGuide />} />
+          <Route path="rules" element={<Rules />} />
+          <Route path="bedding" element={<Bedding />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
