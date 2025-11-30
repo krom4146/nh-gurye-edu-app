@@ -6,6 +6,7 @@ import Facility from './pages/Facility';
 import LifeGuide from './pages/LifeGuide';
 import Rules from './pages/Rules';
 import Bedding from './pages/Bedding';
+import Suggestions from './pages/Suggestions';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="life" element={<LifeGuide />} />
           <Route path="rules" element={<Rules />} />
           <Route path="bedding" element={<Bedding />} />
+          <Route path="suggestions" element={<Suggestions />} />
         </Route>
       </Routes>
     </Router>

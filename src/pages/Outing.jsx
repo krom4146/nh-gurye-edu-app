@@ -95,7 +95,7 @@ const Outing = () => {
         if (!supabase) return;
         const subscription = supabase
             .channel('stay_requests_channel')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'stay_requests' }, (payload) => {
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'stay_requests' }, () => {
                 fetchOutings();
             })
             .subscribe();
