@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Home, LogOut, ChevronLeft } from 'lucide-react';
+import PWAInstallPrompt from './PWAInstallPrompt';
 
 const Layout = () => {
     const navigate = useNavigate();
@@ -38,8 +39,11 @@ const Layout = () => {
             <footer className="bg-nh-gray p-4 text-center text-xs text-gray-500 mt-auto">
                 © 농협구례교육원
             </footer>
+
+            <PWAInstallPrompt />
         </div>
     );
 };
+
 
 export default Layout;
