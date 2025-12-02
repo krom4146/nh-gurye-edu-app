@@ -71,7 +71,8 @@ const PWAInstallPrompt = () => {
                     <h3 className="font-bold text-gray-900 mb-1">앱으로 설치하기</h3>
                     {isIOS ? (
                         <p className="text-sm text-gray-600 leading-relaxed">
-                            하단의 <span className="inline-block mx-1"><Share size={14} /></span> 공유 버튼을 누르고<br />
+                            아이폰은 <strong>Safari 브라우저</strong>에서만 설치가 가능합니다.<br />
+                            하단 <span className="inline-block mx-1"><Share size={14} /></span> 공유 버튼을 누르고<br />
                             <span className="font-semibold">'홈 화면에 추가'</span>를 선택하세요.
                         </p>
                     ) : (
