@@ -23,3 +23,7 @@ create policy "Enable read access for all users" on suggestions for select using
 create policy "Enable insert access for all users" on suggestions for insert with check (true);
 create policy "Enable update access for all users" on suggestions for update using (true);
 create policy "Enable delete access for all users" on suggestions for delete using (true);
+
+-- Add columns for admin reply
+alter table suggestions add column if not exists admin_reply text;
+alter table suggestions add column if not exists admin_reply_created_at timestamp with time zone;

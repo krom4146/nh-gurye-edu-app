@@ -28,6 +28,10 @@ const Suggestions = () => {
     const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
     const [pendingPost, setPendingPost] = useState(null);
 
+    // Admin Reply State
+    const [replyContent, setReplyContent] = useState('');
+    const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+
     // Fetch Suggestions
     const fetchSuggestions = React.useCallback(async () => {
         setLoading(true);
@@ -90,6 +94,7 @@ const Suggestions = () => {
             setShowPasswordPrompt(true);
         } else {
             setSelectedPost(post);
+            setReplyContent(post.admin_reply || '');
             setView('detail');
         }
     };
@@ -113,6 +118,7 @@ const Suggestions = () => {
         // Master Key Logic
         if (inputPassword === 'nacf1660' || inputPassword === pendingPost.password) {
             setSelectedPost(pendingPost);
+            setReplyContent(pendingPost.admin_reply || '');
             setView('detail');
             setShowPasswordPrompt(false);
             setPendingPost(null);
@@ -138,6 +144,49 @@ const Suggestions = () => {
         } catch (error) {
             console.error("Error resetting suggestions:", error);
             alert('초기화 중 오류가 발생했습니다.');
+        }
+    };
+
+    // Handle Reply Submit
+    const handleReplySubmit = async () => {
+        if (!replyContent.trim()) {
+            alert('답변 내용을 입력해주세요.');
+            return;
+        }
+
+        setIsSubmittingReply(true);
+        try {
+            const { error } = await supabase
+                .from('suggestions')
+                .update({
+                    admin_reply: replyContent,
+                    admin_reply_created_at: new Date().toISOString()
+                })
+                .eq('id', selectedPost.id);
+
+            if (error) throw error;
+
+            alert('답변이 등록되었습니다.');
+
+            // Update local state
+            setSelectedPost({
+                ...selectedPost,
+                admin_reply: replyContent,
+                admin_reply_created_at: new Date().toISOString()
+            });
+
+            // Update list state
+            setSuggestions(suggestions.map(s =>
+                s.id === selectedPost.id
+                    ? { ...s, admin_reply: replyContent, admin_reply_created_at: new Date().toISOString() }
+                    : s
+            ));
+
+        } catch (error) {
+            console.error("Error submitting reply:", error);
+            alert('답변 등록 중 오류가 발생했습니다.');
+        } finally {
+            setIsSubmittingReply(false);
         }
     };
 
@@ -221,7 +270,12 @@ const Suggestions = () => {
                                 </div>
                                 <div className="flex justify-between items-center text-xs text-gray-500">
                                     <span>{format(new Date(post.created_at), 'yyyy.MM.dd HH:mm')}</span>
-                                    {post.is_secret && <span className="text-orange-500">비밀글</span>}
+                                    <div className="flex gap-2">
+                                        {post.admin_reply && (
+                                            <span className="text-nh-blue font-medium">답변완료</span>
+                                        )}
+                                        {post.is_secret && <span className="text-orange-500">비밀글</span>}
+                                    </div>
                                 </div>
                             </div>
                         ))
@@ -309,6 +363,43 @@ const Suggestions = () => {
                     <div className="min-h-[200px] text-gray-700 whitespace-pre-wrap leading-relaxed">
                         {selectedPost.content}
                     </div>
+
+                    {/* Admin Reply Section */}
+                    {(selectedPost.admin_reply || isAdmin) && (
+                        <div className="mt-6 pt-6 border-t border-gray-100">
+                            <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                <span className="bg-nh-blue text-white text-xs px-2 py-1 rounded-full">Admin</span>
+                                관리자 답변
+                            </h4>
+
+                            {isAdmin ? (
+                                <div className="space-y-3">
+                                    <textarea
+                                        value={replyContent}
+                                        onChange={(e) => setReplyContent(e.target.value)}
+                                        className="w-full p-3 border border-gray-200 rounded-lg h-32 resize-none focus:border-nh-blue focus:ring-1 focus:ring-nh-blue outline-none bg-gray-50"
+                                        placeholder="관리자 답변을 입력하세요..."
+                                    />
+                                    <div className="flex justify-end">
+                                        <button
+                                            onClick={handleReplySubmit}
+                                            disabled={isSubmittingReply}
+                                            className="bg-nh-blue text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-50"
+                                        >
+                                            {isSubmittingReply ? '등록 중...' : '답변 등록'}
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-gray-50 p-4 rounded-xl text-gray-700 whitespace-pre-wrap leading-relaxed border border-gray-100">
+                                    {selectedPost.admin_reply}
+                                    <div className="text-right mt-2 text-xs text-gray-400">
+                                        {format(new Date(selectedPost.admin_reply_created_at || new Date()), 'yyyy.MM.dd HH:mm')}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
                     <button
                         onClick={() => setView('list')}
                         className="w-full border border-gray-300 text-gray-600 py-2.5 rounded-lg font-medium hover:bg-gray-50"
