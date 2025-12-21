@@ -29,7 +29,7 @@ const ChallengeBanner = () => {
                     <Trophy size={32} />
                 </div>
                 <div className="text-left">
-                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-orange-700 transition-colors">NH 챌린지 (미션 수행)</h3>
+                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-orange-700 transition-colors">농심천심 챌린지</h3>
                     <p className="text-sm text-gray-600">교육원 곳곳에 숨겨진 미션을 찾아라!</p>
                 </div>
             </div>
