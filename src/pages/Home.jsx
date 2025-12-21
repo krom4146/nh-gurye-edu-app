@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Map, BookOpen, AlertCircle, CheckSquare, Coffee } from 'lucide-react';
+import { LogOut, Map, BookOpen, AlertCircle, CheckSquare, Coffee, Trophy } from 'lucide-react';
 
 const MenuItem = ({ icon, label, to, color }) => {
     const navigate = useNavigate();
@@ -14,6 +14,30 @@ const MenuItem = ({ icon, label, to, color }) => {
                 <Icon size={32} />
             </div>
             <span className="font-medium text-gray-800 text-sm sm:text-base">{label}</span>
+        </button>
+    );
+};
+
+const ChallengeBanner = () => {
+    return (
+        <button
+            onClick={() => window.location.href = 'https://nh-challenge.vercel.app'}
+            className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-yellow-50 to-orange-50 hover:from-yellow-100 hover:to-orange-100 border border-orange-100 rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95 group"
+        >
+            <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full text-white shadow-orange-200 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Trophy size={32} />
+                </div>
+                <div className="text-left">
+                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-orange-700 transition-colors">NH 챌린지 (미션 수행)</h3>
+                    <p className="text-sm text-gray-600">교육원 곳곳에 숨겨진 미션을 찾아라!</p>
+                </div>
+            </div>
+            <div className="text-orange-400 group-hover:translate-x-1 transition-transform">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
         </button>
     );
 };
@@ -33,44 +57,50 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Grid Menu */}
-            <div className="grid grid-cols-2 gap-4">
-                <MenuItem
-                    icon={LogOut}
-                    label="외출/외박 신청"
-                    to="/outing"
-                    color="bg-nh-blue"
-                />
-                <MenuItem
-                    icon={Map}
-                    label="시설 안내"
-                    to="/facility"
-                    color="bg-nh-green"
-                />
-                <MenuItem
-                    icon={Coffee}
-                    label="생활 안내"
-                    to="/life"
-                    color="bg-orange-400"
-                />
-                <MenuItem
-                    icon={BookOpen}
-                    label="생활 수칙"
-                    to="/rules"
-                    color="bg-red-500"
-                />
-                <MenuItem
-                    icon={CheckSquare}
-                    label="퇴실시 주의사항"
-                    to="/bedding"
-                    color="bg-indigo-500"
-                />
-                <MenuItem
-                    icon={AlertCircle}
-                    label="건의사항"
-                    to="/suggestions"
-                    color="bg-pink-500"
-                />
+            {/* Main Menu Area */}
+            <div className="space-y-4">
+                {/* Challenge Banner */}
+                <ChallengeBanner />
+
+                {/* Grid Menu */}
+                <div className="grid grid-cols-2 gap-4">
+                    <MenuItem
+                        icon={LogOut}
+                        label="외출/외박 신청"
+                        to="/outing"
+                        color="bg-nh-blue"
+                    />
+                    <MenuItem
+                        icon={Map}
+                        label="시설 안내"
+                        to="/facility"
+                        color="bg-nh-green"
+                    />
+                    <MenuItem
+                        icon={Coffee}
+                        label="생활 안내"
+                        to="/life"
+                        color="bg-orange-400"
+                    />
+                    <MenuItem
+                        icon={BookOpen}
+                        label="생활 수칙"
+                        to="/rules"
+                        color="bg-red-500"
+                    />
+                    <MenuItem
+                        icon={CheckSquare}
+                        label="퇴실시 주의사항"
+                        to="/bedding"
+                        color="bg-indigo-500"
+                    />
+                    <MenuItem
+                        icon={AlertCircle}
+                        label="건의사항"
+                        to="/suggestions"
+                        color="bg-pink-500"
+                    />
+                </div>
             </div>
         </div>
     );
