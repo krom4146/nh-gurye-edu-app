@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { format } from 'date-fns';
 import { Lock, LogOut, CheckCircle, RefreshCw } from 'lucide-react';
@@ -70,40 +70,41 @@ const Outing = () => {
     }, [currentRequestId]);
 
     // Admin: Fetch all outings
+    const fetchStayRequests = useCallback(async () => {
+        if (!isAdmin || !supabase) return;
+        setLoading(true);
+        const { data, error } = await supabase
+            .from('stay_requests')
+            .select('*')
+            .neq('status', 'returned') // Filter out returned items
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error("Error fetching outings:", error);
+        } else {
+            setOutings(data || []);
+        }
+        setLoading(false);
+    }, [isAdmin]);
+
     useEffect(() => {
         if (!isAdmin || !supabase) return;
 
-        const fetchOutings = async () => {
-            setLoading(true);
-            const { data, error } = await supabase
-                .from('stay_requests')
-                .select('*')
-                .neq('status', 'returned') // Filter out returned items
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error("Error fetching outings:", error);
-            } else {
-                setOutings(data || []);
-            }
-            setLoading(false);
-        };
-
-        fetchOutings();
+        fetchStayRequests();
 
         // Real-time subscription for Admin
         if (!supabase) return;
         const subscription = supabase
             .channel('stay_requests_channel')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'stay_requests' }, () => {
-                fetchOutings();
+                fetchStayRequests();
             })
             .subscribe();
 
         return () => {
             subscription.unsubscribe();
         };
-    }, [isAdmin]);
+    }, [isAdmin, fetchStayRequests]);
 
 
     const handleSubmit = async (e) => {
@@ -190,7 +191,12 @@ const Outing = () => {
                 .eq('id', id);
 
             if (error) throw error;
-            // List will auto-update via subscription or re-fetch
+            
+            // Immediately sync state by filtering out the returned item
+            setOutings(prev => prev.filter(item => item.id !== id));
+            
+            // Optionally refresh from server to ensure sync
+            fetchStayRequests();
         } catch (error) {
             console.error("Error updating document: ", error);
         }
@@ -318,7 +324,7 @@ const Outing = () => {
                                         </div>
                                         <div className="text-xs text-gray-500">
                                             <span className="mr-2">📍 {item.destination}</span>
-                                            <span>🕒 {format(new Date(item.created_at), 'HH:mm')} 출발</span>
+                                            <span>🕒 {format(new Date(item.created_at), 'yyyy-MM-dd HH:mm')} 출발</span>
                                         </div>
                                     </div>
 
@@ -335,7 +341,7 @@ const Outing = () => {
                                                 <CheckCircle size={14} /> 복귀완료
                                             </span>
                                             <span className="text-xs text-gray-400">
-                                                {item.returned_at ? format(new Date(item.returned_at), 'HH:mm') : ''}
+                                                {item.returned_at ? format(new Date(item.returned_at), 'yyyy-MM-dd HH:mm') : ''}
                                             </span>
                                         </div>
                                     )}
@@ -445,7 +451,7 @@ const Outing = () => {
                                     <div className="flex justify-between">
                                         <span>출발시간</span>
                                         <span className="font-bold text-gray-800">
-                                            {currentRequestData?.created_at && format(new Date(currentRequestData.created_at), 'HH:mm')}
+                                            {currentRequestData?.created_at && format(new Date(currentRequestData.created_at), 'yyyy-MM-dd HH:mm')}
                                         </span>
                                     </div>
                                 </div>

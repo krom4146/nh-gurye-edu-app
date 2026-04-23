@@ -115,8 +115,13 @@ const Suggestions = () => {
 
         if (!pendingPost) return;
 
-        // Master Key Logic
-        if (inputPassword === 'nacf1660' || inputPassword === pendingPost.password) {
+        // Security logic: 
+        // Admin mode ON: Allow both post password and admin password
+        // Admin mode OFF: Allow ONLY post password
+        const isPostPasswordCorrect = inputPassword === pendingPost.password;
+        const isAdminPasswordCorrect = isAdmin && inputPassword === 'nacf1660';
+
+        if (isPostPasswordCorrect || isAdminPasswordCorrect) {
             setSelectedPost(pendingPost);
             setReplyContent(pendingPost.admin_reply || '');
             setView('detail');
@@ -264,12 +269,12 @@ const Suggestions = () => {
                             >
                                 <div className="flex justify-between items-start mb-1">
                                     <h3 className="font-bold text-gray-800 line-clamp-1 flex-1">
-                                        {post.title}
+                                        {post.is_secret && !isAdmin ? "🔒 비공개 건의사항입니다." : post.title}
                                     </h3>
                                     {post.is_secret && <Lock size={16} className="text-gray-400 ml-2 flex-shrink-0" />}
                                 </div>
                                 <div className="flex justify-between items-center text-xs text-gray-500">
-                                    <span>{format(new Date(post.created_at), 'yyyy.MM.dd HH:mm')}</span>
+                                    <span>{format(new Date(post.created_at), 'yyyy-MM-dd HH:mm')}</span>
                                     <div className="flex gap-2">
                                         {post.admin_reply && (
                                             <span className="text-nh-blue font-medium">답변완료</span>
@@ -352,7 +357,7 @@ const Suggestions = () => {
                     <div className="border-b border-gray-100 pb-3">
                         <h3 className="text-lg font-bold text-gray-800 mb-1">{selectedPost.title}</h3>
                         <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <span>{format(new Date(selectedPost.created_at), 'yyyy.MM.dd HH:mm')}</span>
+                            <span>{format(new Date(selectedPost.created_at), 'yyyy-MM-dd HH:mm')}</span>
                             {selectedPost.is_secret && (
                                 <span className="flex items-center gap-1 text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded">
                                     <Lock size={10} /> 비밀글
@@ -394,7 +399,7 @@ const Suggestions = () => {
                                 <div className="bg-gray-50 p-4 rounded-xl text-gray-700 whitespace-pre-wrap leading-relaxed border border-gray-100">
                                     {selectedPost.admin_reply}
                                     <div className="text-right mt-2 text-xs text-gray-400">
-                                        {format(new Date(selectedPost.admin_reply_created_at || new Date()), 'yyyy.MM.dd HH:mm')}
+                                        {format(new Date(selectedPost.admin_reply_created_at || new Date()), 'yyyy-MM-dd HH:mm')}
                                     </div>
                                 </div>
                             )}
