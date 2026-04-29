@@ -34,7 +34,8 @@ const facilities = [
         desc: '최고의 시설을 자랑하는 집중의 공간',
         details: ['24시간 운영'],
         image: '/library.jpg',
-        x: 36, y: 35, pinColor: 'text-indigo-600'
+        x: 36, y: 30, pinColor: 'text-indigo-600',
+        labelPosition: 'top'
     },
     {
         id: '5', name: '체력단련실', emoji: '🏋️', category: '체육시설', location: '복지동',
@@ -107,7 +108,11 @@ const Facility = () => {
                                         {item.emoji}
                                     </div>
                                     <span
-                                        className="absolute bottom-3 left-4 md:bottom-4 md:left-5 px-1 py-[1px] md:px-1.5 md:py-0.5 bg-white/60 backdrop-blur-sm text-[8px] md:text-[10px] font-bold text-gray-900 rounded shadow-sm border border-white/50 whitespace-nowrap"
+                                        className={`absolute px-1 py-[1px] md:px-1.5 md:py-0.5 bg-white/40 backdrop-blur-sm text-[8px] md:text-[10px] font-bold text-gray-900 rounded shadow-sm border border-white/40 whitespace-nowrap ${
+                                            item.labelPosition === 'top' 
+                                                ? 'bottom-full left-1/2 -translate-x-1/2 mb-1' 
+                                                : 'bottom-3 left-4 md:bottom-4 md:left-5'
+                                        }`}
                                         style={{ textShadow: '0 0 4px rgba(255,255,255,1)' }}
                                     >
                                         {item.name}
