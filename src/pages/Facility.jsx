@@ -83,11 +83,11 @@ const Facility = () => {
                 pinch={{ step: 5 }}
             >
                 <TransformComponent wrapperClass="w-full h-full" contentClass="w-full h-full flex items-center justify-center">
-                    <div className="relative w-full max-w-none">
+                    <div className="relative w-full">
                         <img
                             src={facilityMap}
                             alt="시설 안내도"
-                            className="w-[800px] max-w-none md:w-full h-auto object-contain drop-shadow-md"
+                            className="w-full h-auto object-contain drop-shadow-md"
                             draggable={false}
                         />
 
