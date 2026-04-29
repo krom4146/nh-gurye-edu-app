@@ -9,51 +9,59 @@ const facilities = [
         desc: '교육원의 핵심 학습 공간',
         details: [
             '1층 (원장실, 교육팀, 소강당, 강사대기실)',
-            '2층 (강의실 201~203, 대강당, 행사홀)',
-            '3층 (강의실 301~303)'
+            '2층 (강의실: 201호,202호, 분임토의실: 203호~206호, 교수연구실, 대강당, 행사홀)',
+            '3층 (강의실: 301호~303호, 분임토의실: 304호~308호)'
         ],
+        image: '/training.jpg',
         x: 75, y: 35, pinColor: 'text-blue-600'
     },
     {
         id: '2', name: '식당', emoji: '🍚', category: '편의시설', location: '본관 2층',
         desc: '전국 최고 밥맛!',
-        details: ['일과 중 운영시간을 꼭 확인해 주세요.'],
+        details: ['조식 07:40~08:20, 중식 13:00~13:40, 석식 18:00~18:40'],
+        image: '/cafeteria.jpg',
         x: 58, y: 42, pinColor: 'text-orange-500'
     },
     {
         id: '3', name: '숙소동', emoji: '🛏️', category: '숙박시설', location: '숙소동',
         desc: '편안한 휴식 공간',
-        details: ['숙소, 화장실 및 세탁실 구비'],
+        details: ['숙소: 1~3층, 화장실/세탁실: 1층(여자), 2층/3층(남자)'],
+        image: '/dormitory.jpg',
         x: 20, y: 30, pinColor: 'text-green-600'
     },
     {
         id: '4', name: '독서실', emoji: '📚', category: '학습시설', location: '복지동',
         desc: '최고의 시설을 자랑하는 집중의 공간',
-        details: [],
+        details: ['24시간 운영'],
+        image: '/library.jpg',
         x: 36, y: 35, pinColor: 'text-indigo-600'
     },
     {
         id: '5', name: '체력단련실', emoji: '🏋️', category: '체육시설', location: '복지동',
         desc: '일과 후 체력 증진!',
-        details: ['런닝머신, 천국의 계단, 실내 자전거, 웨이트 기구, 탁구장 완비'],
+        details: ['런닝머신, 천국의 계단, 실내 자전거, 웨이트 기구, 탁구장 완비, 운영시간: ~22시까지)'],
+        image: '/gym.jpg',
         x: 45, y: 25, pinColor: 'text-red-500'
     },
     {
         id: '6', name: '카페혜움', emoji: '☕', category: '편의시설', location: '복지동 1층',
         desc: '커피 한 잔의 여유',
-        details: ['카페 및 미니편의점 운영'],
+        details: ['카페 및 미니편의점 운영(08:00~22:00, 신규과정 19시까지)'],
+        image: '/cafe.jpg',
         x: 50, y: 33, pinColor: 'text-yellow-600'
     },
     {
         id: '7', name: '대강당', emoji: '⚡', category: '편의시설', location: '주차장',
-        desc: '입교식 및 조합원교육',
-        details: ['252석'],
+        desc: '주요행사',
+        details: ['252석의 규모로 입수료식 및 조합원교육이 이루어지는 곳'],
+        image: '/grand auditorium.jpg',
         x: 90, y: 45, pinColor: 'text-teal-500'
     },
     {
         id: '8', name: '산책로', emoji: '🌳', category: '휴식시설', location: '야외',
         desc: '교육원 명소',
         details: ['저녁 조명이 특히 아름다운 힐링 산책로'],
+        image: '/trail.jpg',
         x: 40, y: 75, pinColor: 'text-emerald-600'
     }
 ];
@@ -143,11 +151,21 @@ const Facility = () => {
                             </button>
                         </div>
 
-                        {/* Image Placeholder */}
-                        <div className="w-full h-32 bg-gray-100 rounded-xl mb-5 flex flex-col items-center justify-center text-gray-400 border border-gray-200">
-                            <ImageIcon size={32} className="mb-2 opacity-50" />
-                            <span className="text-sm">사진 준비 중</span>
-                        </div>
+                        {/* Image Viewer */}
+                        {selectedFacility.image ? (
+                            <div className="w-full h-48 mb-5 overflow-hidden rounded-xl border border-gray-200">
+                                <img
+                                    src={selectedFacility.image}
+                                    alt={selectedFacility.name}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        ) : (
+                            <div className="w-full h-32 bg-gray-100 rounded-xl mb-5 flex flex-col items-center justify-center text-gray-400 border border-gray-200">
+                                <ImageIcon size={32} className="mb-2 opacity-50" />
+                                <span className="text-sm">사진 준비 중</span>
+                            </div>
+                        )}
 
                         {/* Details */}
                         <div className="space-y-4">
