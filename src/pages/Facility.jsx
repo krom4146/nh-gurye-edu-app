@@ -103,11 +103,11 @@ const Facility = () => {
                                 }}
                             >
                                 <div className="relative flex items-center justify-center group">
-                                    <div className={`w-8 h-8 md:w-5 md:h-5 flex items-center justify-center bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-white/50 text-sm md:text-[10px]`}>
+                                    <div className={`w-5 h-5 md:w-6 md:h-6 flex items-center justify-center bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-white/50 text-[10px] md:text-xs`}>
                                         {item.emoji}
                                     </div>
                                     <span
-                                        className="absolute bottom-5 left-6 md:bottom-3 md:left-4 px-1.5 py-0.5 md:px-1 md:py-[1px] bg-white/60 backdrop-blur-sm text-xs md:text-[8px] font-bold text-gray-900 rounded shadow-sm border border-white/50 whitespace-nowrap"
+                                        className="absolute bottom-3 left-4 md:bottom-4 md:left-5 px-1 py-[1px] md:px-1.5 md:py-0.5 bg-white/60 backdrop-blur-sm text-[8px] md:text-[10px] font-bold text-gray-900 rounded shadow-sm border border-white/50 whitespace-nowrap"
                                         style={{ textShadow: '0 0 4px rgba(255,255,255,1)' }}
                                     >
                                         {item.name}
