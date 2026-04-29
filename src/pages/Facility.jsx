@@ -110,7 +110,7 @@ const Facility = () => {
                                     <span
                                         className={`absolute px-1 py-[1px] md:px-1.5 md:py-0.5 bg-white/40 backdrop-blur-sm text-[8px] md:text-[10px] font-bold text-gray-900 rounded shadow-sm border border-white/40 whitespace-nowrap ${
                                             item.labelPosition === 'top' 
-                                                ? 'bottom-full left-1/2 -translate-x-1/2 mb-1' 
+                                                ? 'bottom-full left-1/2 -translate-x-1/2' 
                                                 : 'bottom-3 left-4 md:bottom-4 md:left-5'
                                         }`}
                                         style={{ textShadow: '0 0 4px rgba(255,255,255,1)' }}
