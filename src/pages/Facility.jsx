@@ -101,7 +101,7 @@ const Facility = () => {
                 wheel={{ step: 0.1 }}
                 pinch={{ step: 5 }}
             >
-                <TransformComponent wrapperClass="w-full h-full" contentClass="w-full h-full flex items-center justify-center">
+                <TransformComponent wrapperClass="w-full h-full" contentClass="w-full h-full flex flex-col items-center justify-center">
                     <div className="relative w-full">
                         <img
                             src={facilityMap}
@@ -138,15 +138,15 @@ const Facility = () => {
                             </button>
                         ))}
                     </div>
+
+                    {/* 안내 문구 (지도 바로 밑으로 이동) */}
+                    <div className={`mt-6 flex justify-center pointer-events-none z-30 transition-opacity duration-300 ${selectedFacility ? 'opacity-0' : 'opacity-100'}`}>
+                        <p className="text-gray-500 text-[16px] md:text-[17px] font-medium px-5 py-2 md:px-6 md:py-2.5 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-white/50 text-center">
+                            ℹ️ 아이콘을 눌러 시설을 확인하세요
+                        </p>
+                    </div>
                 </TransformComponent>
             </TransformWrapper>
-
-            {/* 안내 문구 (하단 고정 오버레이) */}
-            <div className={`absolute bottom-8 md:bottom-12 left-0 right-0 flex justify-center pointer-events-none z-30 transition-opacity duration-300 ${selectedFacility ? 'opacity-0' : 'opacity-100'}`}>
-                <p className="text-gray-500 text-[13px] md:text-sm font-medium px-5 py-2 md:px-6 md:py-2.5 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-white/50 text-center">
-                    ℹ️ 아이콘을 눌러 시설을 확인하세요
-                </p>
-            </div>
 
             {/* Bottom Sheet Backdrop */}
             {selectedFacility && (
