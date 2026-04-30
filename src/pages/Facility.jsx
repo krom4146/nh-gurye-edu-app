@@ -16,7 +16,7 @@ const facilities = [
         x: 75, y: 35, pinColor: 'text-blue-600'
     },
     {
-        id: '2', name: '식당', emoji: '🍚', category: '편의시설', location: '본관 2층',
+        id: '2', name: '식당', emoji: '🍚', category: '편의시설', location: '본관',
         desc: '전국 최고 밥맛!',
         details: ['조식 07:40~08:20, 중식 13:00~13:40, 석식 18:00~18:40'],
         image: '/cafeteria.jpg',
@@ -45,14 +45,14 @@ const facilities = [
         x: 45, y: 25, pinColor: 'text-red-500'
     },
     {
-        id: '6', name: '카페혜움', emoji: '☕', category: '편의시설', location: '복지동 1층',
+        id: '6', name: '카페혜움', emoji: '☕', category: '편의시설', location: '복지동',
         desc: '커피 한 잔의 여유',
         details: ['카페 및 미니편의점 운영(08:00~22:00, 신규과정 19시까지)'],
         image: '/cafe.jpg',
         x: 50, y: 33, pinColor: 'text-yellow-600'
     },
     {
-        id: '7', name: '대강당', emoji: '⚡', category: '편의시설', location: '주차장',
+        id: '7', name: '대강당', emoji: '⚡', category: '교육시설', location: '본관',
         desc: '주요행사',
         details: ['252석의 규모로 입수료식 및 조합원교육이 이루어지는 곳'],
         image: '/grand auditorium.jpg',
@@ -108,11 +108,10 @@ const Facility = () => {
                                         {item.emoji}
                                     </div>
                                     <span
-                                        className={`absolute px-1 py-[1px] md:px-1.5 md:py-0.5 bg-white/40 backdrop-blur-sm text-[8px] md:text-[10px] font-bold text-gray-900 rounded shadow-sm border border-white/40 whitespace-nowrap ${
-                                            item.labelPosition === 'top' 
-                                                ? 'bottom-full left-1/2 -translate-x-1/2' 
+                                        className={`absolute px-1 py-[1px] md:px-1.5 md:py-0.5 bg-white/40 backdrop-blur-sm text-[10px] md:text-xs leading-none font-bold text-gray-900 rounded shadow-sm border border-white/40 whitespace-nowrap ${item.labelPosition === 'top'
+                                                ? 'bottom-full left-1/2 -translate-x-1/2'
                                                 : 'bottom-3 left-4 md:bottom-4 md:left-5'
-                                        }`}
+                                            }`}
                                         style={{ textShadow: '0 0 4px rgba(255,255,255,1)' }}
                                     >
                                         {item.name}
@@ -123,6 +122,13 @@ const Facility = () => {
                     </div>
                 </TransformComponent>
             </TransformWrapper>
+
+            {/* 안내 문구 (하단 고정 오버레이) */}
+            <div className={`absolute bottom-8 md:bottom-12 left-0 right-0 flex justify-center pointer-events-none z-30 transition-opacity duration-300 ${selectedFacility ? 'opacity-0' : 'opacity-100'}`}>
+                <p className="text-gray-500 text-[13px] md:text-sm font-medium px-5 py-2 md:px-6 md:py-2.5 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-white/50 text-center">
+                    ℹ️ 아이콘을 눌러 시설을 확인하세요
+                </p>
+            </div>
 
             {/* Bottom Sheet Backdrop */}
             {selectedFacility && (
