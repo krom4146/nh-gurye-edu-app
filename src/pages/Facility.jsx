@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Info, Image as ImageIcon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Info, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import facilityMap from '../assets/facility_map.jpg';
 
@@ -69,6 +69,24 @@ const facilities = [
 
 const Facility = () => {
     const [selectedFacility, setSelectedFacility] = useState(null);
+    const [imageLoading, setImageLoading] = useState(true);
+
+    // 컴포넌트 마운트 시 팝업 이미지 프리로드
+    useEffect(() => {
+        facilities.forEach(facility => {
+            if (facility.image) {
+                const img = new Image();
+                img.src = facility.image;
+            }
+        });
+    }, []);
+
+    // 선택된 시설이 바뀔 때마다 이미지 로딩 상태 초기화
+    useEffect(() => {
+        if (selectedFacility?.image) {
+            setImageLoading(true);
+        }
+    }, [selectedFacility]);
 
     return (
         <div className="-mx-4 -mt-4 -mb-20 h-[calc(100vh-64px)] relative bg-gray-100 overflow-hidden">
@@ -166,11 +184,19 @@ const Facility = () => {
 
                         {/* Image Viewer */}
                         {selectedFacility.image ? (
-                            <div className="w-full h-48 mb-5 overflow-hidden rounded-xl border border-gray-200">
+                            <div className="relative w-full h-48 mb-5 overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
+                                {/* Image Loading Skeleton / Spinner */}
+                                {imageLoading && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100/80 backdrop-blur-sm z-10">
+                                        <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
+                                    </div>
+                                )}
                                 <img
                                     src={selectedFacility.image}
                                     alt={selectedFacility.name}
-                                    className="w-full h-full object-cover"
+                                    className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+                                    onLoad={() => setImageLoading(false)}
+                                    onError={() => setImageLoading(false)}
                                 />
                             </div>
                         ) : (
