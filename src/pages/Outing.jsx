@@ -123,6 +123,23 @@ const Outing = () => {
         try {
             if (!supabase) throw new Error("Supabase client not initialized");
 
+            // 1. 중복 검사 로직: 동일한 이름과 교번으로 활성(active) 상태인 내역이 있는지 조회
+            const { data: activeRequests, error: checkError } = await supabase
+                .from('stay_requests')
+                .select('id')
+                .eq('student_id', formData.studentId)
+                .eq('name', formData.name)
+                .eq('status', 'active');
+
+            if (checkError) throw checkError;
+
+            // 2. 만약 아직 복귀하지 않은 내역이 이미 존재한다면, 데이터 저장을 막고 경고창 띄움
+            if (activeRequests && activeRequests.length > 0) {
+                alert('⚠️ 이미 외출/외박 중인 상태입니다. 관리자에게 복귀 처리를 확인한 후 다시 신청해 주세요.');
+                return;
+            }
+
+            // 3. 진행 중인 외출/외박 내역이 없을 때만 정상적으로 새 신청 데이터를 DB에 저장
             const { data, error } = await supabase
                 .from('stay_requests')
                 .insert([
