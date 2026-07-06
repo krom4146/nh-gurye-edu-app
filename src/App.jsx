@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Outing from './pages/Outing';
 import Facility from './pages/Facility';
 import LifeGuide from './pages/LifeGuide';
-import Rules from './pages/Rules';
+import Survey from './pages/Survey';
 import Bedding from './pages/Bedding';
 import Suggestions from './pages/Suggestions';
 
@@ -17,7 +17,7 @@ function App() {
           <Route path="outing" element={<Outing />} />
           <Route path="facility" element={<Facility />} />
           <Route path="life" element={<LifeGuide />} />
-          <Route path="rules" element={<Rules />} />
+          <Route path="survey" element={<Survey />} />
           <Route path="bedding" element={<Bedding />} />
           <Route path="suggestions" element={<Suggestions />} />
         </Route>

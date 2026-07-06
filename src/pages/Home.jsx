@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Map, BookOpen, AlertCircle, CheckSquare, Coffee, Trophy } from 'lucide-react';
+import { LogOut, Map, AlertCircle, CheckSquare, Coffee, Trophy, ClipboardList } from 'lucide-react';
 
 const MenuItem = ({ icon, label, to, color }) => {
     const navigate = useNavigate();
@@ -83,10 +83,10 @@ const Home = () => {
                         color="bg-orange-400"
                     />
                     <MenuItem
-                        icon={BookOpen}
-                        label="생활 수칙"
-                        to="/rules"
-                        color="bg-red-500"
+                        icon={AlertCircle}
+                        label="건의사항"
+                        to="/suggestions"
+                        color="bg-pink-500"
                     />
                     <MenuItem
                         icon={CheckSquare}
@@ -95,10 +95,10 @@ const Home = () => {
                         color="bg-indigo-500"
                     />
                     <MenuItem
-                        icon={AlertCircle}
-                        label="건의사항"
-                        to="/suggestions"
-                        color="bg-pink-500"
+                        icon={ClipboardList}
+                        label="수료의견 작성"
+                        to="/survey"
+                        color="bg-purple-600"
                     />
                 </div>
             </div>
