@@ -7,6 +7,31 @@ import { ClipboardList, Star, ExternalLink, Loader2 } from 'lucide-react';
 // 형식: https://docs.google.com/spreadsheets/d/{Spreadsheet_ID}/export?format=csv
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1hv9WhrYyR9IIgt7TTw47r-FdCKulhp1ltBc4G2Z69gA/export?format=csv";
 
+// CSV 파싱 헬퍼 함수: 따옴표 안의 쉼표를 무시하고 띄어쓰기를 온전히 보존합니다.
+const parseCSVRow = (row) => {
+    const result = [];
+    let cell = '';
+    let inQuotes = false;
+    for (let i = 0; i < row.length; i++) {
+        const char = row[i];
+        if (char === '"') {
+            if (inQuotes && row[i+1] === '"') {
+                cell += '"'; // Escape quote
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (char === ',' && !inQuotes) {
+            result.push(cell.trim());
+            cell = '';
+        } else {
+            cell += char;
+        }
+    }
+    result.push(cell.trim());
+    return result;
+};
+
 const Survey = () => {
     const [surveyList, setSurveyList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -30,14 +55,11 @@ const Survey = () => {
 
                 // 첫 번째 줄(index 0)은 헤더이므로 제외(slice)하고 나머지 데이터만 파싱
                 const parsedData = rows.slice(1).map(row => {
-                    // 쉼표로 분리하되 쌍따옴표 안의 쉼표는 무시하도록 정규식 사용
-                    const columns = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
-                    // 앞뒤 따옴표 및 공백 제거
-                    const cleanData = columns.map(item => item.replace(/^"|"$/g, '').trim());
+                    const columns = parseCSVRow(row);
                     return {
-                        courseName: cleanData[0] || '',
-                        overallLink: cleanData[1] || '#',
-                        instructorLink: cleanData[2] || '#'
+                        courseName: columns[0] || '',
+                        overallLink: columns[1] || '#',
+                        instructorLink: columns[2] || '#'
                     };
                 });
 
@@ -62,16 +84,16 @@ const Survey = () => {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                <Loader2 className="animate-spin text-purple-600" size={48} />
-                <p className="text-gray-500 font-medium animate-pulse">설문 정보를 불러오는 중입니다...</p>
+            <div className="flex flex-col items-center justify-center py-20 space-y-4 bg-white/70 backdrop-blur-md rounded-2xl m-4">
+                <Loader2 className="animate-spin text-nh-blue" size={48} />
+                <p className="text-gray-600 font-medium animate-pulse">설문 정보를 불러오는 중입니다...</p>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="text-center py-20">
+            <div className="text-center py-20 bg-white/70 backdrop-blur-md rounded-2xl m-4 border border-red-100">
                 <p className="text-red-500 font-medium mb-2">데이터 로드 실패</p>
                 <p className="text-sm text-gray-500">{error}</p>
             </div>
@@ -79,62 +101,58 @@ const Survey = () => {
     }
 
     return (
-        <div className="space-y-12 animate-in fade-in duration-500 pb-8">
+        <div className="space-y-6 animate-in fade-in duration-500 pb-8">
             {surveyList.map((survey, index) => (
-                <div key={index} className="space-y-6">
-                    {/* Title Area */}
-                    <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-100 rounded-2xl p-6 text-center shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4">
-                            <ClipboardList size={100} />
+                <div key={index} className="bg-white/85 backdrop-blur-sm border border-white/40 shadow-sm rounded-2xl p-4 space-y-4">
+                    {/* Compact Title Area */}
+                    <div className="flex flex-col items-center text-center space-y-2 pb-3 border-b border-gray-100">
+                        <div className="flex items-center gap-1.5">
+                            <div className="p-1 bg-nh-blue/10 rounded-lg text-nh-blue">
+                                <ClipboardList size={16} />
+                            </div>
+                            <span className="text-xs font-bold text-nh-blue tracking-wider">수료 의견 작성</span>
                         </div>
-                        <div className="inline-flex p-3 bg-white rounded-full text-purple-600 shadow-sm mb-4 relative z-10">
-                            <ClipboardList size={32} />
-                        </div>
-                        <p className="text-sm text-purple-600 font-bold mb-1 relative z-10">수료 의견 작성</p>
-                        <h1 className="text-2xl font-black text-gray-800 break-keep relative z-10">
+                        <h1 className="text-lg sm:text-xl font-black text-gray-800 break-keep leading-tight px-2">
                             {survey.courseName}
                         </h1>
-                        <p className="text-gray-500 text-sm mt-3 leading-relaxed break-keep relative z-10">
-                            교육생 여러분의 소중한 의견이<br/>더 나은 구례교육원을 만듭니다.
-                        </p>
                     </div>
 
                     {/* Survey Buttons */}
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-3">
                         <a
                             href={survey.overallLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-between w-full bg-white border-2 border-purple-100 hover:border-purple-500 hover:bg-purple-50 p-6 rounded-2xl transition-all shadow-sm active:scale-95 group"
+                            className="flex items-center justify-between w-full bg-white hover:bg-gray-50 border border-gray-200 p-4 rounded-xl transition-all shadow-sm active:scale-95 group"
                         >
-                            <div className="flex items-center gap-4">
-                                <div className="bg-purple-100 p-3 rounded-full text-purple-600 group-hover:scale-110 transition-transform">
-                                    <ClipboardList size={28} />
+                            <div className="flex items-center gap-3">
+                                <div className="bg-green-50 p-2.5 rounded-full text-nh-green group-hover:scale-110 transition-transform">
+                                    <ClipboardList size={22} />
                                 </div>
                                 <div className="text-left">
-                                    <h2 className="text-lg font-bold text-gray-800 group-hover:text-purple-700">전체 수료의견</h2>
-                                    <p className="text-sm text-gray-500 mt-1">교육 과정 전반에 대한 평가</p>
+                                    <h2 className="text-base font-bold text-gray-800">전체 수료의견</h2>
+                                    <p className="text-xs text-gray-500 mt-0.5">과정 전반 평가</p>
                                 </div>
                             </div>
-                            <ExternalLink className="text-purple-300 group-hover:text-purple-600 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" size={24} />
+                            <ExternalLink className="text-gray-300 group-hover:text-nh-green transition-colors" size={20} />
                         </a>
 
                         <a
                             href={survey.instructorLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-between w-full bg-white border-2 border-indigo-100 hover:border-indigo-500 hover:bg-indigo-50 p-6 rounded-2xl transition-all shadow-sm active:scale-95 group"
+                            className="flex items-center justify-between w-full bg-white hover:bg-gray-50 border border-gray-200 p-4 rounded-xl transition-all shadow-sm active:scale-95 group"
                         >
-                            <div className="flex items-center gap-4">
-                                <div className="bg-indigo-100 p-3 rounded-full text-indigo-600 group-hover:scale-110 transition-transform">
-                                    <Star size={28} />
+                            <div className="flex items-center gap-3">
+                                <div className="bg-orange-50 p-2.5 rounded-full text-orange-500 group-hover:scale-110 transition-transform">
+                                    <Star size={22} />
                                 </div>
                                 <div className="text-left">
-                                    <h2 className="text-lg font-bold text-gray-800 group-hover:text-indigo-700">강사별 수료의견</h2>
-                                    <p className="text-sm text-gray-500 mt-1">강의 및 강사 만족도 평가</p>
+                                    <h2 className="text-base font-bold text-gray-800">강사별 만족도</h2>
+                                    <p className="text-xs text-gray-500 mt-0.5">강의 및 강사 평가</p>
                                 </div>
                             </div>
-                            <ExternalLink className="text-indigo-300 group-hover:text-indigo-600 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" size={24} />
+                            <ExternalLink className="text-gray-300 group-hover:text-orange-500 transition-colors" size={20} />
                         </a>
                     </div>
                 </div>
