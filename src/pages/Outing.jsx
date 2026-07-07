@@ -24,6 +24,7 @@ const Outing = () => {
 
     const [outings, setOutings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Time Restriction Check
     const isTimeAllowed = () => {
@@ -110,6 +111,8 @@ const Outing = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (isSubmitting) return;
+
         if (!isTimeAllowed() && !isAdmin) {
             alert('신청 가능 시간이 아닙니다. (18:00 ~ 22:55)');
             return;
@@ -120,8 +123,31 @@ const Outing = () => {
             return;
         }
 
+        setIsSubmitting(true);
+
         try {
             if (!supabase) throw new Error("Supabase client not initialized");
+
+            // Check if user is already out
+            const { data: existingActive, error: checkError } = await supabase
+                .from('stay_requests')
+                .select('*')
+                .eq('student_id', formData.studentId)
+                .eq('status', 'active')
+                .order('created_at', { ascending: false })
+                .limit(1);
+
+            if (checkError) throw checkError;
+
+            if (existingActive && existingActive.length > 0) {
+                alert('이미 외출 중입니다. 복귀 화면으로 이동합니다.');
+                const existingRecord = existingActive[0];
+                localStorage.setItem('current_request_id', existingRecord.id);
+                setCurrentRequestId(existingRecord.id);
+                setCurrentRequestData(existingRecord);
+                setFormData({ ...formData, type: '외출', destination: '' });
+                return;
+            }
 
             const { data, error } = await supabase
                 .from('stay_requests')
@@ -149,6 +175,8 @@ const Outing = () => {
         } catch (error) {
             console.error("Error adding document: ", error);
             alert(`오류가 발생했습니다: ${error.message || JSON.stringify(error)}`);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -233,8 +261,8 @@ const Outing = () => {
     };
 
     // Determine View Mode
-    const isReturned = currentRequestData?.status === 'returned';
-    const showForm = !currentRequestId || isReturned;
+    const isActive = currentRequestData?.status === 'active';
+    const showForm = !currentRequestId || !isActive;
 
     // Check if Supabase is initialized
     if (!supabase) {
@@ -412,9 +440,10 @@ const Outing = () => {
 
                                 <button
                                     type="submit"
-                                    className="w-full bg-nh-green text-white py-3 rounded-lg font-bold hover:bg-green-600 transition-colors shadow-sm active:scale-[0.98]"
+                                    disabled={isSubmitting}
+                                    className={`w-full text-white py-3 rounded-lg font-bold transition-colors shadow-sm active:scale-[0.98] ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-nh-green hover:bg-green-600'}`}
                                 >
-                                    출발하기 (신청)
+                                    {isSubmitting ? '처리 중...' : '출발하기 (신청)'}
                                 </button>
                                 {!isTimeAllowed() && (
                                     <p className="text-xs text-red-500 text-center mt-2">
