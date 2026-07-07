@@ -37,7 +37,14 @@ const Survey = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Lock screen states
+    const [isLocked, setIsLocked] = useState(true);
+    const [passwordInput, setPasswordInput] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
+
     useEffect(() => {
+        if (isLocked) return;
+
         const fetchSurveyData = async () => {
             try {
                 const response = await fetch(SHEET_URL);
@@ -80,7 +87,59 @@ const Survey = () => {
         };
 
         fetchSurveyData();
-    }, []);
+    }, [isLocked]);
+
+    if (isLocked) {
+        return (
+            <div className="flex flex-col items-center justify-center py-16 space-y-6 bg-white/85 backdrop-blur-md border border-white/40 shadow-sm rounded-2xl m-4 animate-in fade-in duration-500">
+                <div className="text-center space-y-2">
+                    <h1 className="text-2xl font-black text-gray-800">
+                        🔒 수료의견 작성
+                    </h1>
+                    <p className="text-sm text-gray-500 mt-2">안내받은 비밀번호 4자리를 입력해 주세요.</p>
+                </div>
+                
+                <form 
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        if (passwordInput === '1660') {
+                            setIsLocked(false);
+                            setPasswordError(false);
+                        } else {
+                            setPasswordError(true);
+                        }
+                    }}
+                    className="flex flex-col items-center w-full max-w-[240px] space-y-4"
+                >
+                    <div className="w-full space-y-2">
+                        <input
+                            type="password"
+                            inputMode="numeric"
+                            maxLength={4}
+                            value={passwordInput}
+                            onChange={(e) => {
+                                setPasswordInput(e.target.value);
+                                setPasswordError(false);
+                            }}
+                            className={`w-full text-center text-2xl tracking-[0.3em] font-bold p-4 border-2 ${passwordError ? 'border-red-400 bg-red-50 focus:border-red-400 focus:ring-red-400' : 'border-gray-200 bg-gray-50 focus:border-nh-blue focus:ring-nh-blue'} rounded-xl focus:outline-none focus:ring-2 transition-all`}
+                            placeholder="••••"
+                        />
+                        {passwordError && (
+                            <p className="text-sm text-red-500 font-bold text-center animate-in slide-in-from-top-1">
+                                ❌ 비밀번호가 올바르지 않습니다.
+                            </p>
+                        )}
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-nh-blue text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 active:scale-95 transition-all shadow-sm text-lg"
+                    >
+                        확인
+                    </button>
+                </form>
+            </div>
+        );
+    }
 
     if (loading) {
         return (
