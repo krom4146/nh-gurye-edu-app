@@ -38,7 +38,9 @@ const Survey = () => {
     const [error, setError] = useState(null);
 
     // Lock screen states
-    const [isLocked, setIsLocked] = useState(true);
+    const [isLocked, setIsLocked] = useState(() => {
+        return sessionStorage.getItem('survey_unlocked') !== 'true';
+    });
     const [passwordInput, setPasswordInput] = useState('');
     const [passwordError, setPasswordError] = useState(false);
 
@@ -103,6 +105,7 @@ const Survey = () => {
                     onSubmit={(e) => {
                         e.preventDefault();
                         if (passwordInput === '1660') {
+                            sessionStorage.setItem('survey_unlocked', 'true');
                             setIsLocked(false);
                             setPasswordError(false);
                         } else {
@@ -179,6 +182,7 @@ const Survey = () => {
                     {/* Survey Buttons */}
                     <div className="grid grid-cols-1 gap-3">
                         <button
+                            type="button"
                             onClick={() => window.open(survey.overallLink, '_blank', 'noopener,noreferrer')}
                             className="flex items-center justify-between w-full bg-white hover:bg-gray-50 border border-gray-200 p-4 rounded-xl transition-all shadow-sm active:scale-95 group"
                         >
@@ -195,6 +199,7 @@ const Survey = () => {
                         </button>
 
                         <button
+                            type="button"
                             onClick={() => window.open(survey.instructorLink, '_blank', 'noopener,noreferrer')}
                             className="flex items-center justify-between w-full bg-white hover:bg-gray-50 border border-gray-200 p-4 rounded-xl transition-all shadow-sm active:scale-95 group"
                         >
