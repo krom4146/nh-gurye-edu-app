@@ -178,10 +178,8 @@ const Survey = () => {
 
                     {/* Survey Buttons */}
                     <div className="grid grid-cols-1 gap-3">
-                        <a
-                            href={survey.overallLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <button
+                            onClick={() => window.open(survey.overallLink, '_blank', 'noopener,noreferrer')}
                             className="flex items-center justify-between w-full bg-white hover:bg-gray-50 border border-gray-200 p-4 rounded-xl transition-all shadow-sm active:scale-95 group"
                         >
                             <div className="flex items-center gap-3">
@@ -194,12 +192,10 @@ const Survey = () => {
                                 </div>
                             </div>
                             <ExternalLink className="text-gray-300 group-hover:text-nh-green transition-colors" size={20} />
-                        </a>
+                        </button>
 
-                        <a
-                            href={survey.instructorLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <button
+                            onClick={() => window.open(survey.instructorLink, '_blank', 'noopener,noreferrer')}
                             className="flex items-center justify-between w-full bg-white hover:bg-gray-50 border border-gray-200 p-4 rounded-xl transition-all shadow-sm active:scale-95 group"
                         >
                             <div className="flex items-center gap-3">
@@ -212,7 +208,7 @@ const Survey = () => {
                                 </div>
                             </div>
                             <ExternalLink className="text-gray-300 group-hover:text-orange-500 transition-colors" size={20} />
-                        </a>
+                        </button>
                     </div>
                 </div>
             ))}
