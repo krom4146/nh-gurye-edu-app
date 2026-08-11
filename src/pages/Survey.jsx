@@ -164,6 +164,14 @@ const Survey = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-8">
+      {/* 경고 배너 */}
+      <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+        <p className="text-red-600 font-bold flex items-start sm:items-center gap-2 text-sm sm:text-base leading-snug">
+          <span className="text-lg">🚨</span>
+          <span>주의: 본인이 소속된 [해당 반]의 버튼만 선택하여 딱 1번만 제출해 주세요! (다른 반 중복 작성 절대 금지)</span>
+        </p>
+      </div>
+
       {surveyList.map((survey, index) => (
         <div key={index} className="bg-white/85 backdrop-blur-sm border border-white/40 shadow-sm rounded-2xl p-4 space-y-4">
           {/* Compact Title Area */}
