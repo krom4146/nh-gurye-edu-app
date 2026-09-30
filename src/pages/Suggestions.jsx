@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { format } from 'date-fns';
-import { Lock, PenTool, ChevronLeft, Send, RefreshCw } from 'lucide-react';
+import { Lock, PenTool, ChevronLeft, Send, RefreshCw, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Suggestions = () => {
@@ -116,12 +116,11 @@ const Suggestions = () => {
         if (!pendingPost) return;
 
         // Security logic: 
-        // Admin mode ON: Allow both post password and admin password
-        // Admin mode OFF: Allow ONLY post password
+        // Allow if the password matches the post's password or the master admin password
         const isPostPasswordCorrect = inputPassword === pendingPost.password;
-        const isAdminPasswordCorrect = isAdmin && inputPassword === 'nacf1660';
+        const isMasterPasswordCorrect = inputPassword === 'nacf1660';
 
-        if (isPostPasswordCorrect || isAdminPasswordCorrect) {
+        if (isPostPasswordCorrect || isMasterPasswordCorrect) {
             setSelectedPost(pendingPost);
             setReplyContent(pendingPost.admin_reply || '');
             setView('detail');
@@ -149,6 +148,27 @@ const Suggestions = () => {
         } catch (error) {
             console.error("Error resetting suggestions:", error);
             alert('초기화 중 오류가 발생했습니다.');
+        }
+    };
+
+    // Handle Individual Delete
+    const handleDelete = async (e, id) => {
+        e.stopPropagation();
+        if (!window.confirm("정말 이 건의사항을 삭제하시겠습니까?")) return;
+
+        try {
+            const { error } = await supabase
+                .from('suggestions')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            alert('삭제되었습니다.');
+            fetchSuggestions();
+        } catch (error) {
+            console.error("Error deleting suggestion:", error);
+            alert('삭제 중 오류가 발생했습니다.');
         }
     };
 
@@ -275,11 +295,19 @@ const Suggestions = () => {
                                 </div>
                                 <div className="flex justify-between items-center text-xs text-gray-500">
                                     <span>{format(new Date(post.created_at), 'yyyy-MM-dd HH:mm')}</span>
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 items-center">
                                         {post.admin_reply && (
                                             <span className="text-nh-blue font-medium">답변완료</span>
                                         )}
                                         {post.is_secret && <span className="text-orange-500">비밀글</span>}
+                                        {isAdmin && (
+                                            <button
+                                                onClick={(e) => handleDelete(e, post.id)}
+                                                className="flex items-center gap-1 text-red-600 bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded transition-colors ml-1 border border-red-100"
+                                            >
+                                                <Trash2 size={12} /> 삭제
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
